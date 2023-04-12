@@ -1,5 +1,5 @@
-name = simple_nginx_html
 Docker := ./srcs/docker-compose.yml
+
 all:
 	@printf "Launch configuration ${name}...\n"
 	@docker-compose -f $(Docker) up -d

@@ -1,20 +1,13 @@
-version: "3.3"
-services: 
-  nginx:
+version: "3.9"
+services:
+  webserve:
     build: ./requirements/nginx
-    container_name: local_nginx
-    image: nginx
-    ports:
-      - "443:443"
-    restart: always
-    networks:
-      - net
-  mariadb:
+    ports: "443:443"
+    env_file: .env
+  app:
+    build: ./requirements/wordpress
+  db:
     build: ./requirements/mariadb
-    container_name: mariadb
-    image: mariadb
-    expose:
-      - "3306"
-
+volumes:
 networks:
-  net:
+
