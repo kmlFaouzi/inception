@@ -1,13 +1,56 @@
-version: "3.9"
+version: "3"
+
 services:
   webserve:
-    build: ./requirements/nginx
-    ports: "443:443"
-    env_file: .env
-  app:
-    build: ./requirements/wordpress
-  db:
-    build: ./requirements/mariadb
-volumes:
-networks:
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: ./requirements/nginx/Dockerfile
+    networks:
+      - wordpress
+    ports:
+      - "443:443" 
+    volumes:
+      - wp-volume:/var/www
+    depends_on:
+      - app
+    restart: always
 
+  app:
+    container_name: wordpress
+    build:
+      context: .
+      dockerfile: ./requirements/wordpress/Dockerfile
+    volumes:
+     - wp-volume:/var/www
+    networks:
+      - wordpress
+    env_file: ./.env
+  db:
+    container_name: mariadb
+    build:
+      context: .
+      dockerfile: ./requirements/mariadb/Dockerfile
+    volumes:
+      - db-volume:/var/lib/mysql
+    networks:
+      - wordpress
+    env_file: ./.env
+
+volumes:
+  wp-volume:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/$USER/data/wp
+      o: bind
+  db-volume:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/$USER/data/db
+      o: bind
+
+networks:
+  wordpress:
+    driver: bridge
