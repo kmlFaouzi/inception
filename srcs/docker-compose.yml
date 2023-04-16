@@ -14,7 +14,6 @@ services:
       - wp-volume:/var/www
     depends_on:
       - app
-    restart: always
 
   app:
     container_name: wordpress
@@ -26,6 +25,8 @@ services:
     networks:
       - wordpress
     env_file: ./.env
+    restart: always
+
   db:
     container_name: mariadb
     build:
@@ -36,6 +37,22 @@ services:
     networks:
       - wordpress
     env_file: ./.env
+    restart: always
+
+  # ftp:
+  #   container_name: ftp
+  #   build:
+  #     context: .
+  #     dockerfile: ./requirements/bonus/ftp/Dockerfile
+  #   volumes:
+  #     - wp-volume:/home/kamal/ftp/files
+  #   networks:
+  #     - wordpress
+  #   ports:
+  #     - "21:21"
+  #     - "40000-50000:40000-50000"
+  #   env_file: ./.env
+  #   restart: always
 
 volumes:
   wp-volume:
