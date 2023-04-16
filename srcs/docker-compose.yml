@@ -39,20 +39,22 @@ services:
     env_file: ./.env
     restart: always
 
-  # ftp:
-  #   container_name: ftp
-  #   build:
-  #     context: .
-  #     dockerfile: ./requirements/bonus/ftp/Dockerfile
-  #   volumes:
-  #     - wp-volume:/home/kamal/ftp/files
-  #   networks:
-  #     - wordpress
-  #   ports:
-  #     - "21:21"
-  #     - "40000-50000:40000-50000"
-  #   env_file: ./.env
-  #   restart: always
+  ftp:
+    container_name: ftp
+    build:
+      context: .
+      dockerfile: ./requirements/bonus/ftp/Dockerfile
+    volumes:
+      - wp-volume:/home/kamal/ftp/files
+    networks:
+      - wordpress
+    ports:
+      - "21:21"
+      - "20:20"
+      - "40000-40005:40000-40005"
+    env_file: ./.env
+    depends_on:
+      - app
 
 volumes:
   wp-volume:
