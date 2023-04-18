@@ -12,8 +12,6 @@ RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && apt-get clean && apt-get up
 
 EXPOSE 443
 
-COPY ./requirements/nginx/conf/nginx.conf /etc/nginx/http.d/
-
 COPY ./requirements/nginx/conf/nginx.conf /etc/nginx/conf.d/
 
 CMD ["nginx", "-g", "daemon off;"]

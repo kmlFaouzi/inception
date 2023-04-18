@@ -13,9 +13,10 @@ services:
     volumes:
       - wp-volume:/var/www
     depends_on:
-      - app
+      - wordpress
+    restart: always
 
-  app:
+  wordpress:
     container_name: wordpress
     build:
       context: .
@@ -25,9 +26,11 @@ services:
     networks:
       - wordpress
     env_file: ./.env
+    depends_on:
+      - mariadb
     restart: always
 
-  db:
+  mariadb:
     container_name: mariadb
     build:
       context: .
@@ -54,7 +57,50 @@ services:
       - "40000-40005:40000-40005"
     env_file: ./.env
     depends_on:
-      - app
+      - wordpress
+    restart: always
+  
+  redis:
+    build:
+      context: .
+      dockerfile: requirements/bonus/redis/Dockerfile
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - wordpress
+    restart: always
+
+  adminer:
+    build:
+      context: .
+      dockerfile: requirements/bonus/adminer/Dockerfile
+    container_name: adminer
+    depends_on:
+      - mariadb
+    ports:
+      - "8080:8080"
+    networks:
+     - wordpress
+    restart: always
+
+  webstatic:
+    container_name: static_website
+    build:
+      context: .
+      dockerfile: requirements/bonus/website_static/Dockerfile
+    ports:
+      - "80:80"
+    restart: always
+
+  portainer:
+    container_name: portainer
+    build:
+      context: .
+      dockerfile: requirements/bonus/portainer/Dockerfile
+    ports:
+      - "9000:9000"
+    restart: always
 
 volumes:
   wp-volume:
@@ -63,11 +109,11 @@ volumes:
       type: none
       device: /home/$USER/data/wp
       o: bind
-  db-volume:
+  mariadb-volume:
     driver: local
     driver_opts:
       type: none
-      device: /home/$USER/data/db
+      device: /home/$USER/data/mariadb
       o: bind
 
 networks:

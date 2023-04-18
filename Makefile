@@ -1,30 +1,28 @@
 Docker := ./srcs/docker-compose.yml
 
-all:
-	@printf "Launch configuration ${name}...\n"
-	@docker-compose -f $(Docker) up -d
+all: folders
+	docker-compose -f $(Docker) up --build
+
+folders:
+	if [ ! -d "/home/kfaouzi/data" ]; then mkdir -p /home/kfaouzi/data/db /home/kfaouzi/data/wp; fi
 
 build:
-	@printf "Building configuration ${name}...\n"
-	@docker-compose -f $(Docker) up -d --build
+	docker-compose -f $(Docker) up -d --build
 
 down:
-	@printf "Stopping configuration ${name}...\n"
-	@docker-compose -f $(Docker) down
+	docker-compose -f $(Docker) down 
 
 re:	down
-	@printf "Rebuild configuration ${name}...\n"
-	@docker-compose -f $(Docker) up -d --build
+	docker-compose -f $(Docker) up -d --build
 
 clean: down
-	@printf "Cleaning configuration ${name}...\n"
-	@docker system prune -a
 
 fclean:
-	@printf "Total clean of all configurations docker\n"
-	@docker stop $$(docker ps -qa)
-	@docker system prune --all --force --volumes
-	@docker network prune --force
-	@docker volume prune --force
+	docker stop $$(docker ps -qa)
+	docker system prune --all --force --volumes
+	docker network prune --force
+	docker volume prune --force
+	rm -rf /home/kfaouzi/data
+	
 
 .PHONY	: all build down re clean fclean
