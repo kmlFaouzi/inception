@@ -101,6 +101,8 @@ services:
     ports:
       - "9000:9000"
     restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   wp-volume:
